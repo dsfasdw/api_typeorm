@@ -1,7 +1,7 @@
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
 import config from '../config';
-import mysql from 'mysql2/promise';
-import { Sequelize } from 'sequelize';
-import { initUserModel } from '../users/user.model';
+import { User } from '../users/user.model';
 
 interface DatabaseConfig {
     host: string;
@@ -11,27 +11,27 @@ interface DatabaseConfig {
     database: string;
 }
 
-const db: { User?: ReturnType<typeof initUserModel>; sequelize?: Sequelize } = {};
-export default db;
+const { host, port, user, password, database } = config.database as DatabaseConfig;
 
-async function initialize(): Promise<void> {
-    const { host, port, user, password, database } = config.database as DatabaseConfig;
+export const AppDataSource = new DataSource({
+    type: 'mysql',
+    host,
+    port,
+    username: user,
+    password,
+    database,
+    synchronize: true, // Automatically sync database schema
+    logging: true,
+    entities: [User], // Add all entities here
+    subscribers: [],
+    migrations: [],
+});
 
-
-    const connection = await mysql.createConnection({ host, port, user, password });
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
-    await connection.end();
-
- 
-    const sequelize = new Sequelize(database, user, password, { dialect: 'mysql' });
-    db.sequelize = sequelize;
-
-
-    db.User = initUserModel(sequelize);
-
-
-    await sequelize.sync({ alter: true });
-    console.log('Database initialized successfully');
-}
-
-initialize().catch((err) => console.error('Database initialization failed:', err));
+// Initialize the database connection
+AppDataSource.initialize()
+    .then(() => {
+        console.log('Database connection established successfully');
+    })
+    .catch((err) => {
+        console.error('Failed to connect to the database:', err);
+    });

@@ -1,53 +1,31 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-interface UserAttributes {
-  id?: number;
-  email: string;
-  passwordHash: string;
-  title: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id!: number; // Definite assignment assertion
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+    @Column({ unique: true })
+    email?: string;
 
-export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public id!: number;
-  public email!: string;
-  public passwordHash!: string;
-  public title!: string;
-  public firstName!: string;
-  public lastName!: string;
-  public role!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+    @Column()
+    passwordHash?: string;
 
-export function initUserModel(sequelize: Sequelize): typeof User {
-  User.init(
-    {
-      email: { type: DataTypes.STRING, allowNull: false, unique: true },
-      passwordHash: { type: DataTypes.STRING, allowNull: false },
-      title: { type: DataTypes.STRING, allowNull: false },
-      firstName: { type: DataTypes.STRING, allowNull: false },
-      lastName: { type: DataTypes.STRING, allowNull: false },
-      role: { type: DataTypes.STRING, allowNull: false },
-    },
-    {
-      sequelize,
-      modelName: 'User',
-      defaultScope: {
-        attributes: { exclude: ['passwordHash'] },
-      },
-      scopes: {
-        withHash: {
-          attributes: { include: ['passwordHash'] },
-        },
-      },
-    }
-  );
-  return User;
+    @Column()
+    title?: string;
+
+    @Column()
+    firstName?: string;
+
+    @Column()
+    lastName?: string;
+
+    @Column()
+    role?: string;
+
+    @CreateDateColumn()
+    createdAt?: Date;
+
+    @UpdateDateColumn()
+    updatedAt?: Date;
 }
