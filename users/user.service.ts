@@ -31,30 +31,30 @@ export async function createUser(params: UserParams): Promise<void> {
     }
 
     // Hash the password
-    const passwordHash = await bcrypt.hash(params.password, 10);
+   const passwordHash = await bcrypt.hash(params.password,10)
 
     // Create a new user
     const user = new User();
-    user.email = params.email;
+    user.email=params.email;
     user.passwordHash = passwordHash;
     user.title = params.title;
     user.firstName = params.firstName;
     user.lastName = params.lastName;
     user.role = params.role;
 
-    await userRepository.save(user);
+    await userRepository.save(user)
     console.log('User created successfully');
 }
 
 export async function updateUser(id: number, params: Partial<UserParams>): Promise<void> {
     const user = await getUserById(id);
 
-    if (params.email && params.email !== user.email) {
+
         const existingUser = await userRepository.findOneBy({ email: params.email });
         if (existingUser) {
             throw new Error(`Email ${params.email} is already taken`);
         }
-    }
+    
 
     if (params.password) {
         const passwordHash = await bcrypt.hash(params.password, 10);

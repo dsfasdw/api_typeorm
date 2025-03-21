@@ -44,22 +44,22 @@ function _delete(req: Request, res: Response, next: NextFunction) {
 }
 
 // Schema validation functions
-function createSchema(req: Request, res: Response, next: NextFunction) {
-    const schema: Schema = Joi.object({
+function createSchema (req:Request, res:Response, next:NextFunction ) {
+  const schema:Schema = Joi.object({
         title: Joi.string().required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
-        role: Joi.string().valid(Roles.Admin, Roles.User).required(),
+        role:Joi.string().valid(Roles.Admin,Roles.User).required(),
         email: Joi.string().email().required(),
-        password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required()
+        password:Joi.string().min(6).required(),
+        confirmpassword:Joi.string().valid(Joi.ref('password')).required()
     });
     validateRequest(req, next, schema);
 }
-
+//updating the schema using PUT api 
 function updateSchema(req: Request, res: Response, next: NextFunction) {
     const schema: Schema = Joi.object({
-        title: Joi.string().empty(''),
+        title: Joi.string().empty(''),      
         firstName: Joi.string().empty(''),
         lastName: Joi.string().empty(''),
         role: Joi.string().valid(Roles.Admin, Roles.User).empty(''),

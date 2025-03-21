@@ -13,6 +13,7 @@ interface DatabaseConfig {
 
 const { host, port, user, password, database } = config.database as DatabaseConfig;
 
+
 export const AppDataSource = new DataSource({
     type: 'mysql',
     host,
@@ -20,14 +21,13 @@ export const AppDataSource = new DataSource({
     username: user,
     password,
     database,
-    synchronize: true, // Automatically sync database schema
+    synchronize: true, 
     logging: true,
-    entities: [User], // Add all entities here
+    entities: [User],
     subscribers: [],
     migrations: [],
 });
 
-// Initialize the database connection
 AppDataSource.initialize()
     .then(() => {
         console.log('Database connection established successfully');
