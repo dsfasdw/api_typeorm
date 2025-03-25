@@ -65,7 +65,7 @@ function updateSchema(req: Request, res: Response, next: NextFunction) {
         role: Joi.string().valid(Roles.Admin, Roles.User).empty(''),
         email: Joi.string().email().empty(''),
         password: Joi.string().min(6).empty(''),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).empty("")
+        confirmpassword: Joi.string().valid(Joi.ref('password')).empty("")
     }).with('password', 'confirmPassword');
     validateRequest(req, next, schema);
 }
